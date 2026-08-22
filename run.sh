@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Starts the Two Worlds API server.
+# Starts the Prototype API server.
 # Usage: ./run.sh [uvicorn args...]   e.g. ./run.sh --port 8001
 
 set -euo pipefail

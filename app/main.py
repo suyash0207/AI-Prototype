@@ -8,10 +8,9 @@ from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
-from app import config  # noqa: F401  (import ensures .env is loaded before anything reads it)
 from app.agent.orchestrator import handle_message
 
-app = FastAPI(title="Two Worlds")
+app = FastAPI(title="Prototype")
 
 
 class ChatRequest(BaseModel):
