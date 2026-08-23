@@ -1,9 +1,0 @@
-sequenceDiagram
-    participant U as User
-    participant O as Orchestrator
-    participant S as search_messages
-    U->>O: "What's been said about Sharma recently?"
-    O->>S: query="Sharma"
-    S->>S: cosine similarity over precomputed embeddings
-    S-->>O: top hit: msg_001 (Ramesh, 14 May, "Sharma disputing 80k, says short supply")
-    O->>U: final_answer: "On 14 May, Ramesh said Sharma is disputing Rs 80,000, citing short supply."
