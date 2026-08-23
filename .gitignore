@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 .venv/
 venv/
+
+# Regenerable artifact: precomputed chat embeddings (run chat_data/seed_messages.py to rebuild).
+chat_data/embeddings.json

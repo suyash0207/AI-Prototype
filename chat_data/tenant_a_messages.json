@@ -1,0 +1,863 @@
+[
+  {
+    "message_id": "msg_001",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-14T09:02:00",
+    "text": "Sharma disputing 80k, says short supply"
+  },
+  {
+    "message_id": "msg_002",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-17T11:30:00",
+    "text": "4812 partially received, 300 units short"
+  },
+  {
+    "message_id": "msg_003",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-19T14:00:00",
+    "text": "supp B pushing delivery by a week"
+  },
+  {
+    "message_id": "msg_004",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-19T20:00:00",
+    "text": "confirmed with warehouse, 5025 not fully in yet"
+  },
+  {
+    "message_id": "msg_005",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-19T21:00:00",
+    "text": "dyeing line down since morning"
+  },
+  {
+    "message_id": "msg_006",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-19T23:00:00",
+    "text": "Pillai Garments confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_007",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-20T03:00:00",
+    "text": "checking with Supplier B Ltd. about status, no reply yet"
+  },
+  {
+    "message_id": "msg_008",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-20T04:00:00",
+    "text": "need more Silk fabric urgently for the next batch"
+  },
+  {
+    "message_id": "msg_009",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-20T07:00:00",
+    "text": "following up on 5024 again today"
+  },
+  {
+    "message_id": "msg_010",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-20T08:00:00",
+    "text": "Softener chemical delivery expected Monday"
+  },
+  {
+    "message_id": "msg_011",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-20T09:00:00",
+    "text": "please confirm attendance for tomorrow's stock count"
+  },
+  {
+    "message_id": "msg_012",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-20T12:00:00",
+    "text": "need more Starch chemical urgently for the next batch"
+  },
+  {
+    "message_id": "msg_013",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-20T13:00:00",
+    "text": "Starch chemical running low in stock"
+  },
+  {
+    "message_id": "msg_014",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-20T15:00:00",
+    "text": "let's sync at 3pm today"
+  },
+  {
+    "message_id": "msg_015",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-20T16:00:00",
+    "text": "Patel Clothing asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_016",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-20T21:00:00",
+    "text": "following up on 5003 again today"
+  },
+  {
+    "message_id": "msg_017",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-21T00:00:00",
+    "text": "any update from Bharat Weaving Co on the pending order?"
+  },
+  {
+    "message_id": "msg_018",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-21T06:00:00",
+    "text": "Pillai Garments confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_019",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-21T11:00:00",
+    "text": "Bose Textiles asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_020",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-21T12:00:00",
+    "text": "Vishnu Chemicals says there's a delay at their end"
+  },
+  {
+    "message_id": "msg_021",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-21T16:00:00",
+    "text": "checking with Laxmi Threads about status, no reply yet"
+  },
+  {
+    "message_id": "msg_022",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-21T18:00:00",
+    "text": "following up on 5029 again today"
+  },
+  {
+    "message_id": "msg_023",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-21T19:00:00",
+    "text": "confirmed with warehouse, 5000 not fully in yet"
+  },
+  {
+    "message_id": "msg_024",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-21T20:00:00",
+    "text": "any update from Vishnu Chemicals on the pending order?"
+  },
+  {
+    "message_id": "msg_025",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-21T22:00:00",
+    "text": "Desai Garments asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_026",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-22T00:00:00",
+    "text": "Chopra Fashions confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_027",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-22T01:00:00",
+    "text": "please confirm attendance for tomorrow's stock count"
+  },
+  {
+    "message_id": "msg_028",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-22T02:00:00",
+    "text": "Bose Textiles asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_029",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-22T08:00:00",
+    "text": "Softener chemical running low in stock"
+  },
+  {
+    "message_id": "msg_030",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-22T10:00:00",
+    "text": "Pillai Garments confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_031",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-22T15:00:00",
+    "text": "please confirm attendance for tomorrow's stock count"
+  },
+  {
+    "message_id": "msg_032",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-22T16:00:00",
+    "text": "confirmed with warehouse, 4820 not fully in yet"
+  },
+  {
+    "message_id": "msg_033",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-22T19:00:00",
+    "text": "Starch chemical running low in stock"
+  },
+  {
+    "message_id": "msg_034",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-22T21:00:00",
+    "text": "let's sync at 3pm today"
+  },
+  {
+    "message_id": "msg_035",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-22T23:00:00",
+    "text": "Bharat Weaving Co confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_036",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-23T02:00:00",
+    "text": "checking with Laxmi Threads about status, no reply yet"
+  },
+  {
+    "message_id": "msg_037",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-23T08:00:00",
+    "text": "Menon Apparel confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_038",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-23T13:00:00",
+    "text": "please confirm attendance for tomorrow's stock count"
+  },
+  {
+    "message_id": "msg_039",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-23T19:00:00",
+    "text": "Singh Fabrics confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_040",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-23T21:00:00",
+    "text": "Denim fabric running low in stock"
+  },
+  {
+    "message_id": "msg_041",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-23T22:00:00",
+    "text": "please confirm attendance for tomorrow's stock count"
+  },
+  {
+    "message_id": "msg_042",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-24T02:00:00",
+    "text": "Blue dye delivery expected Monday"
+  },
+  {
+    "message_id": "msg_043",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-24T08:00:00",
+    "text": "following up on 5003 again today"
+  },
+  {
+    "message_id": "msg_044",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-24T09:00:00",
+    "text": "any update from Ashoka Fibres on the pending order?"
+  },
+  {
+    "message_id": "msg_045",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-24T12:00:00",
+    "text": "sending photos of the shipment shortly"
+  },
+  {
+    "message_id": "msg_046",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-24T18:00:00",
+    "text": "Annapurna Dyers confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_047",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-25T00:00:00",
+    "text": "Jai Bharat Yarns says there's a delay at their end"
+  },
+  {
+    "message_id": "msg_048",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-25T03:00:00",
+    "text": "let's sync at 3pm today"
+  },
+  {
+    "message_id": "msg_049",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-25T07:00:00",
+    "text": "Red dye delivery expected Monday"
+  },
+  {
+    "message_id": "msg_050",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-25T09:00:00",
+    "text": "Menon Apparel asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_051",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-25T15:00:00",
+    "text": "5019 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_052",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-25T20:00:00",
+    "text": "5001 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_053",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-25T22:00:00",
+    "text": "dyeing line down since morning"
+  },
+  {
+    "message_id": "msg_054",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-26T03:00:00",
+    "text": "good morning team"
+  },
+  {
+    "message_id": "msg_055",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-26T08:00:00",
+    "text": "following up on 5033 again today"
+  },
+  {
+    "message_id": "msg_056",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-26T09:00:00",
+    "text": "any update from Annapurna Dyers on the pending order?"
+  },
+  {
+    "message_id": "msg_057",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-26T14:00:00",
+    "text": "let's sync at 3pm today"
+  },
+  {
+    "message_id": "msg_058",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-26T18:00:00",
+    "text": "any update on 5006?"
+  },
+  {
+    "message_id": "msg_059",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-27T00:00:00",
+    "text": "good morning team"
+  },
+  {
+    "message_id": "msg_060",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-27T03:00:00",
+    "text": "Agarwal Fashions confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_061",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-27T07:00:00",
+    "text": "invoice copies shared in the drive folder"
+  },
+  {
+    "message_id": "msg_062",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-27T13:00:00",
+    "text": "Gupta Textiles confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_063",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-27T17:00:00",
+    "text": "5009 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_064",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-27T21:00:00",
+    "text": "following up on 5019 again today"
+  },
+  {
+    "message_id": "msg_065",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-28T01:00:00",
+    "text": "any update on 5034?"
+  },
+  {
+    "message_id": "msg_066",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-28T04:00:00",
+    "text": "Om Dyeworks confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_067",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-28T07:00:00",
+    "text": "checking with Himalaya Dye Works about status, no reply yet"
+  },
+  {
+    "message_id": "msg_068",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-28T12:00:00",
+    "text": "please confirm attendance for tomorrow's stock count"
+  },
+  {
+    "message_id": "msg_069",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-28T17:00:00",
+    "text": "Gupta Textiles wants to increase next order size"
+  },
+  {
+    "message_id": "msg_070",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-28T20:00:00",
+    "text": "Ganesh Fabrics pushing delivery by a week"
+  },
+  {
+    "message_id": "msg_071",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-29T00:00:00",
+    "text": "Himalaya Dye Works pushing delivery by a week"
+  },
+  {
+    "message_id": "msg_072",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-29T01:00:00",
+    "text": "following up on 4812 again today"
+  },
+  {
+    "message_id": "msg_073",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-29T05:00:00",
+    "text": "need more Red dye urgently for the next batch"
+  },
+  {
+    "message_id": "msg_074",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-29T11:00:00",
+    "text": "Denim fabric delivery expected Monday"
+  },
+  {
+    "message_id": "msg_075",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-29T13:00:00",
+    "text": "power cut in the unit, back up in an hour"
+  },
+  {
+    "message_id": "msg_076",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-29T15:00:00",
+    "text": "following up on 5021 again today"
+  },
+  {
+    "message_id": "msg_077",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-29T17:00:00",
+    "text": "Blue dye running low in stock"
+  },
+  {
+    "message_id": "msg_078",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-05-29T18:00:00",
+    "text": "Malabar Weaves confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_079",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-30T00:00:00",
+    "text": "Reddy Apparel confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_080",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-30T04:00:00",
+    "text": "following up on 5015 again today"
+  },
+  {
+    "message_id": "msg_081",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-30T05:00:00",
+    "text": "check Red dye stock before confirming new orders"
+  },
+  {
+    "message_id": "msg_082",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-30T10:00:00",
+    "text": "Laxmi Threads confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_083",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-30T14:00:00",
+    "text": "5007 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_084",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-30T19:00:00",
+    "text": "invoice copies shared in the drive folder"
+  },
+  {
+    "message_id": "msg_085",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-05-30T23:00:00",
+    "text": "confirmed with warehouse, 5006 not fully in yet"
+  },
+  {
+    "message_id": "msg_086",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-31T04:00:00",
+    "text": "checking with Supplier C about status, no reply yet"
+  },
+  {
+    "message_id": "msg_087",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-05-31T10:00:00",
+    "text": "5021 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_088",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-05-31T16:00:00",
+    "text": "Agarwal Fashions asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_089",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-05-31T18:00:00",
+    "text": "any update from Indus Cotton on the pending order?"
+  },
+  {
+    "message_id": "msg_090",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-05-31T23:00:00",
+    "text": "following up on 5009 again today"
+  },
+  {
+    "message_id": "msg_091",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-06-01T01:00:00",
+    "text": "5022 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_092",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-01T05:00:00",
+    "text": "need more Blue dye urgently for the next batch"
+  },
+  {
+    "message_id": "msg_093",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-06-01T06:00:00",
+    "text": "power cut in the unit, back up in an hour"
+  },
+  {
+    "message_id": "msg_094",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-01T12:00:00",
+    "text": "Supplier C confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_095",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-06-01T14:00:00",
+    "text": "Agarwal Fashions confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_096",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-06-01T18:00:00",
+    "text": "confirmed with warehouse, 5023 not fully in yet"
+  },
+  {
+    "message_id": "msg_097",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-01T23:00:00",
+    "text": "Patel Clothing wants to increase next order size"
+  },
+  {
+    "message_id": "msg_098",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-02T01:00:00",
+    "text": "power cut in the unit, back up in an hour"
+  },
+  {
+    "message_id": "msg_099",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-06-02T04:00:00",
+    "text": "invoice copies shared in the drive folder"
+  },
+  {
+    "message_id": "msg_100",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-02T10:00:00",
+    "text": "following up on 4812 again today"
+  },
+  {
+    "message_id": "msg_101",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-06-02T15:00:00",
+    "text": "Cotton yarn delivery expected Monday"
+  },
+  {
+    "message_id": "msg_102",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-02T19:00:00",
+    "text": "need more Polyester yarn urgently for the next batch"
+  },
+  {
+    "message_id": "msg_103",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-02T20:00:00",
+    "text": "Starch chemical running low in stock"
+  },
+  {
+    "message_id": "msg_104",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-06-02T22:00:00",
+    "text": "sending photos of the shipment shortly"
+  },
+  {
+    "message_id": "msg_105",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-06-03T03:00:00",
+    "text": "Blue dye delivery expected Monday"
+  },
+  {
+    "message_id": "msg_106",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-03T04:00:00",
+    "text": "confirmed with warehouse, 5026 not fully in yet"
+  },
+  {
+    "message_id": "msg_107",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-06-03T06:00:00",
+    "text": "Himalaya Dye Works confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_108",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-06-03T11:00:00",
+    "text": "following up on 5021 again today"
+  },
+  {
+    "message_id": "msg_109",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-03T13:00:00",
+    "text": "5016 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_110",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-06-03T17:00:00",
+    "text": "Polyester yarn delivery expected Monday"
+  },
+  {
+    "message_id": "msg_111",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-03T20:00:00",
+    "text": "any update from Ashoka Fibres on the pending order?"
+  },
+  {
+    "message_id": "msg_112",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-04T02:00:00",
+    "text": "any update from Vishnu Chemicals on the pending order?"
+  },
+  {
+    "message_id": "msg_113",
+    "tenant_id": "tenant_a",
+    "sender": "Ramesh",
+    "timestamp": "2024-06-04T03:00:00",
+    "text": "spoke to Patel Clothing, they'll pay by Friday"
+  },
+  {
+    "message_id": "msg_114",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-04T04:00:00",
+    "text": "any update from Laxmi Threads on the pending order?"
+  },
+  {
+    "message_id": "msg_115",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-06-04T06:00:00",
+    "text": "Menon Apparel confirmed order received, all good"
+  },
+  {
+    "message_id": "msg_116",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-04T08:00:00",
+    "text": "confirmed with warehouse, 5021 not fully in yet"
+  },
+  {
+    "message_id": "msg_117",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-06-04T13:00:00",
+    "text": "Bharat Weaving Co confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_118",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-06-04T18:00:00",
+    "text": "Ganesh Fabrics says there's a delay at their end"
+  },
+  {
+    "message_id": "msg_119",
+    "tenant_id": "tenant_a",
+    "sender": "Vikram",
+    "timestamp": "2024-06-05T00:00:00",
+    "text": "spoke to Reddy Apparel, they'll pay by Friday"
+  },
+  {
+    "message_id": "msg_120",
+    "tenant_id": "tenant_a",
+    "sender": "Sunita",
+    "timestamp": "2024-06-05T03:00:00",
+    "text": "5028 status check, need it urgently"
+  },
+  {
+    "message_id": "msg_121",
+    "tenant_id": "tenant_a",
+    "sender": "Priya",
+    "timestamp": "2024-06-05T04:00:00",
+    "text": "Prakash Dyers confirmed pickup for tomorrow"
+  },
+  {
+    "message_id": "msg_122",
+    "tenant_id": "tenant_a",
+    "sender": "Deepa",
+    "timestamp": "2024-06-05T06:00:00",
+    "text": "Bose Textiles asking for an extension on payment"
+  },
+  {
+    "message_id": "msg_123",
+    "tenant_id": "tenant_a",
+    "sender": "Anil",
+    "timestamp": "2024-06-05T09:00:00",
+    "text": "Prakash Dyers says there's a delay at their end"
+  }
+]

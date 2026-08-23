@@ -1,0 +1,13 @@
+sequenceDiagram
+    participant U as User
+    participant O as Orchestrator
+    participant T as get_customer_outstanding
+    participant DB as Postgres
+    U->>O: "What does Sharma owe?"
+    O->>T: customer_search="Sharma"
+    T->>DB: WHERE reference_code='Sharma' OR name ILIKE '%Sharma%'
+    DB-->>T: CUST-0078 "Sharma Fabrics"
+    T->>DB: SUM(invoices.amount) - SUM(payments.amount)
+    DB-->>T: invoiced=420000, paid=0
+    T-->>O: "Sharma Fabrics (CUST-0078): outstanding=420000"
+    O->>U: final_answer: "Sharma Fabrics owes Rs 4,20,000."

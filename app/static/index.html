@@ -54,6 +54,21 @@
     }
     #new-chat:hover { opacity: 0.9; }
 
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    #tenant-select {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
     #messages {
       flex: 1;
       overflow-y: auto;
@@ -121,7 +136,13 @@
       <div class="title">Prototype</div>
       <div class="session" id="session-label"></div>
     </div>
-    <button id="new-chat">New chat</button>
+    <div class="header-actions">
+      <select id="tenant-select" title="Which business's data this session is scoped to">
+        <option value="tenant_a">tenant_a</option>
+        <option value="tenant_b">tenant_b</option>
+      </select>
+      <button id="new-chat">New chat</button>
+    </div>
   </header>
 
   <div id="messages">
@@ -141,6 +162,7 @@
     const input = document.getElementById("input");
     const sendBtn = document.getElementById("send");
     const newChatBtn = document.getElementById("new-chat");
+    const tenantSelect = document.getElementById("tenant-select");
 
     let sessionId = null;
 
@@ -150,7 +172,7 @@
 
     function startNewChat() {
       sessionId = newSessionId();
-      sessionLabelEl.textContent = `session: ${sessionId}`;
+      sessionLabelEl.textContent = `session: ${sessionId} · tenant: ${tenantSelect.value}`;
       messagesEl.innerHTML = "";
       messagesEl.appendChild(emptyStateEl);
       input.value = "";
@@ -180,7 +202,7 @@
         const res = await fetch("/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ session_id: sessionId, message: text }),
+          body: JSON.stringify({ session_id: sessionId, tenant_id: tenantSelect.value, message: text }),
         });
         if (!res.ok) throw new Error(`request failed (${res.status})`);
         const data = await res.json();
@@ -204,6 +226,9 @@
     });
 
     newChatBtn.addEventListener("click", startNewChat);
+    // Switching tenants mid-conversation would mix two businesses' data
+    // under one session, so treat it the same as starting a new chat.
+    tenantSelect.addEventListener("change", startNewChat);
 
     startNewChat();
   </script>

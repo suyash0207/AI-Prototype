@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from app.provenance.tracker import ProvenanceLedger
+
 
 class SessionState:
     def __init__(self, session_id: str, tenant_id: str, system_prompt: str) -> None:
@@ -18,6 +20,8 @@ class SessionState:
         self.tenant_id = tenant_id
         self.system_message: dict[str, str] = {"role": "system", "content": system_prompt}
         self.chat_messages: list[dict[str, Any]] = []
+        # One ledger per session -- see app/provenance/tracker.py for why this exists.
+        self.provenance = ProvenanceLedger()
 
     def add_human_message(self, text: str) -> None:
         self.chat_messages.append({"role": "user", "content": text})
