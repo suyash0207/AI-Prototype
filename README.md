@@ -61,4 +61,9 @@ This is where both worlds get fused — the orchestrator recognizes it needs a n
 
 ## Setup
 
-See [PLAN.md](PLAN.md) section 11 for full setup instructions (Phase 1 is done and runnable today; Phase 2+3 setup steps apply once that build pass lands).
+1. Fill `OPENAI_API_KEY` in `.env` (created for you on first run)
+2. `createdb two_worlds` (or your own name — then set `DATABASE_URL` in `.env` to match)
+3. `./run.sh` — sets up the venv, then every run: resets the schema and reseeds both tenants from scratch, before starting the server. Chat messages + embeddings stay cached across runs (skipped once already generated, since that calls the OpenAI API); pass `--reseed` to force that step to regenerate too.
+4. Open `http://127.0.0.1:8000/` for the chat UI, or use `curl`/Postman against `POST /chat`
+
+See [PLAN.md](PLAN.md) section 12 for the full setup reference and section 11 for the eval harness.

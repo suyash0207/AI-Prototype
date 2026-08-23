@@ -1,5 +1,5 @@
 """The retrieval sub-agent: its own tiny loop, own ephemeral `SessionState`,
-invoked as a tool by the orchestrator (see `app/tools/retrieval_tool.py`).
+invoked as a tool by the orchestrator (see `app/tools/retrieve_from_chat_tool.py`).
 
 Exists to keep "find and extract facts from chat" a separate,
 structured-output-only responsibility. It can reformulate/re-search
@@ -19,46 +19,17 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from pydantic import BaseModel
-
 from app.agent import fsm
 from app.state.session_state import SessionState
-from app.tools.base import Tool, build_tool_registry
-from app.tools.entity_link_tools import resolve_entity_tool
-from app.tools.search_tools import search_messages_tool
+from app.tools.base import build_tool_registry
+from app.tools.resolve_entity_tool import ResolveEntityTool
+from app.tools.return_claims_tool import ReturnClaimsTool
+from app.tools.search_messages_tool import SearchMessagesTool
 
 _PROMPT_PATH = Path(__file__).resolve().parent.parent / "prompts" / "retrieval_agent.txt"
 _SYSTEM_PROMPT = _PROMPT_PATH.read_text()
 
-
-class ChatClaimArg(BaseModel):
-    message_ref: str          # which chat message this claim came from, e.g. "msg_002"
-    sender: str                # who sent that message
-    timestamp: str             # ISO timestamp of that message, taken verbatim from search_messages
-    extracted_claim: str        # the plain-English fact pulled out of the message
-    linked_entity: str | None = None  # resolved reference_code this claim is about, if resolve_entity found one
-
-
-class ReturnClaimsArgs(BaseModel):
-    claims: list[ChatClaimArg]  # every relevant fact found, or [] if nothing relevant turned up
-
-
-def _return_claims(args: ReturnClaimsArgs, state: SessionState) -> str:
-    return args.model_dump_json()
-
-
-return_claims_tool = Tool(
-    name="return_claims",
-    description=(
-        "Terminate with your findings as a structured list of claims -- never as prose. Call this "
-        "even if you found nothing relevant, with an empty claims list."
-    ),
-    args_schema=ReturnClaimsArgs,
-    handler=_return_claims,
-    is_response_tool=True,
-)
-
-RETRIEVAL_TOOLS = build_tool_registry([search_messages_tool, resolve_entity_tool, return_claims_tool])
+RETRIEVAL_TOOLS = build_tool_registry([SearchMessagesTool, ResolveEntityTool, ReturnClaimsTool])
 
 
 def run_retrieval(session_id: str, tenant_id: str, query: str) -> str:

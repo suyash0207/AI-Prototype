@@ -51,7 +51,7 @@ AI-Prototype/
   requirements.txt                # [phase 1] fastapi, uvicorn, openai, python-dotenv, pydantic
                                    # [phase 2 adds] psycopg[binary], numpy
   .env                             # [phase 1] OPENAI_API_KEY   [phase 2 adds] DATABASE_URL  (gitignored)
-  run.sh                           # sets up venv + starts the server
+  run.sh                           # sets up venv, idempotently sets up the DB (schema/seed/embeddings), starts the server
   db/                              # [phase 2]
     schema.sql                    # orders, purchase_orders, invoices, payments, inventory, suppliers, customers (+ tenant_id everywhere, UUID ids, reference_code human-facing ids)
     knowledge_base.sql            # knowledge_base table: tenant_id, alias_text, canonical_type, canonical_id, confidence, source (empty until Phase 3 writes/reads it)
@@ -169,7 +169,7 @@ erDiagram
 - `purchase_orders.status`: `open | partially_received | received | cancelled`. A PO is "late" when `status != received` and `due_date < today`.
 - `orders.status`: `pending | shipped | delayed | delivered | cancelled`.
 - Outstanding for a customer = `sum(invoices.amount) - sum(payments.amount)` across their invoices, scoped to `tenant_id`.
-- Both status columns are backed by a Postgres native `CREATE TYPE ... AS ENUM (...)` (not free-text `CHECK`), so the DB itself rejects an invalid status — the Python-side enums in section 2.1 are the single source of truth these Postgres enums are generated from.
+- Both status columns are plain `TEXT`, no Postgres-native `CREATE TYPE ... AS ENUM` and no `CHECK` constraint — the Python-side `str, Enum` classes in section 2.1 (`app/domain/enums.py`) are the sole source of truth for valid values; the DB itself enforces nothing here, by design, so there's exactly one place to update when a status value changes.
 - **Commenting convention**: every table and every column in `db/schema.sql` gets a one-line plain-English `-- comment` above it explaining what it means in everyday words, not jargon — someone who has never seen a database should be able to read the file top to bottom and understand the business, not just the syntax.
 
 ### 2.1 The entity-linking bridge (`db/knowledge_base.sql`)
@@ -198,18 +198,18 @@ CREATE TABLE knowledge_base (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     tenant_id TEXT NOT NULL,                       -- which business this mapping belongs to
     alias_text TEXT NOT NULL,                      -- the informal phrase as written in chat, e.g. "supp B"
-    canonical_type entity_type NOT NULL,           -- which kind of ERP record this points to
+    canonical_type TEXT NOT NULL,                  -- which kind of ERP record this points to
     canonical_id UUID NOT NULL,                    -- the id of that exact ERP record (no single FK possible -- it can point at any table)
     confidence NUMERIC(3,2) NOT NULL DEFAULT 1.0,  -- how sure we are this mapping is correct, 0 to 1
-    source knowledge_source NOT NULL                -- how this mapping came to exist (reviewed, model-suggested, user-confirmed)
+    source TEXT NOT NULL                           -- how this mapping came to exist (reviewed, model-suggested, user-confirmed)
 );
 ```
 
 No `unresolved_mentions` table — when a mention can't be confidently resolved and isn't material enough to interrupt the user with `ask_clarification`, it's simply caveated in the narrative and forgotten, not persisted anywhere (nothing in this plan ever reads such a log back out, so it would just be dead weight).
 
-`canonical_id` intentionally has no `REFERENCES` constraint — it's a polymorphic pointer (a supplier's id in one row, an invoice's id in another), so which table it points into is validated at the application layer via `canonical_type`, not by Postgres.
+`canonical_id` intentionally has no `REFERENCES` constraint — it's a polymorphic pointer (a supplier's id in one row, an invoice's id in another), so which table it points into is validated at the application layer via `canonical_type`, not by Postgres. `canonical_type` and `source` are plain `TEXT` too, same reasoning as the ERP status columns above — `app/domain/enums.py`'s `CanonicalEntityType`/`KnowledgeSource` are the sole source of truth, no DB-level enum type to keep in sync.
 
-This table and its enums are created in Phase 2 but stay empty and unread until Phase 3 — `db/seed_tenant_a.py`/`seed_tenant_b.py` seed a handful of `source="reviewed"` rows per tenant now (this is also where tenant-vocabulary-drift setup lives: tenant A's row maps `"lot"` → the same inventory item tenant B's row maps `"batch"` to), so Phase 3's `resolve_entity` has real data to look up from day one instead of starting from zero.
+This table is created in Phase 2 but stays empty and unread until Phase 3 — `db/seed_tenant_a.py`/`seed_tenant_b.py` seed a handful of `source="reviewed"` rows per tenant now (this is also where tenant-vocabulary-drift setup lives: tenant A's row maps `"lot"` → the same inventory item tenant B's row maps `"batch"` to), so Phase 3's `resolve_entity` has real data to look up from day one instead of starting from zero.
 
 Seed scripts deliberately create interacting/contradicting cases for Phase 3/4 to reconcile, even though the reconciliation logic isn't built yet:
 - A purchase order the ERP says is open/full-quantity/due Tuesday, while a seeded chat message from the prior Friday says it was partially received, short by some quantity — the flat contradiction case.
@@ -339,19 +339,11 @@ The remaining items get a written design section in `DESIGN_NOTE.md` plus the mi
 
 ## 12. Setup instructions
 
-**Phase 1 (done)**:
-
-1. Fill `OPENAI_API_KEY` in `.env`
-2. `./run.sh` (creates venv, installs deps, starts the server on port 8000)
-3. Open `http://127.0.0.1:8000/` for the chat UI, or use `curl`/Postman against `POST /chat`
-
-**Phase 2+3 (combined build pass, next)**. Uses a local Postgres database with all tables inside a dedicated `two_worlds` schema (namespace):
-
-4. `psql <database> -f db/schema.sql -f db/knowledge_base.sql`
-5. Add `DATABASE_URL=...` to `.env`
-6. `python db/seed_tenant_a.py && python db/seed_tenant_b.py`
-7. `python chat_data/seed_messages.py` (generates messages + embeddings)
+1. Fill `OPENAI_API_KEY` in `.env` (created for you on first run)
+2. `createdb two_worlds` (or your own name — then set `DATABASE_URL` in `.env` to match)
+3. `./run.sh` — creates the venv, installs deps, then every run: drops + recreates the schema (`db/schema.sql` + `db/knowledge_base.sql`) and reseeds both tenants from scratch (cheap, deterministic, always a clean slate), before starting the server on port 8000. Chat messages + embeddings are the one step that stays cached across runs (skipped once `chat_data/embeddings.json` exists, since that's a real, billed OpenAI API call) — pass `--reseed` to force that step to regenerate too.
+4. Open `http://127.0.0.1:8000/` for the chat UI, or use `curl`/Postman against `POST /chat`
 
 **Phase 4**:
 
-8. `python app/eval/run_eval.py` for regression checks
+5. `python app/eval/run_eval.py` for regression checks

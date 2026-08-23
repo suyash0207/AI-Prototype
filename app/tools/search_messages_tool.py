@@ -13,12 +13,12 @@ import json
 from pathlib import Path
 
 import numpy as np
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from app import config
 from app.agent.openai_client import get_client
 from app.state.session_state import SessionState
-from app.tools.base import Tool
+from app.tools.base import ToolSchema
 
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "chat_data"
 
@@ -62,9 +62,9 @@ def search_messages_for_tenant(tenant_id: str, query: str, top_k: int = 5) -> li
     """Embed `query` and return the top-k most similar messages for this
     tenant, each as {message_id, sender, timestamp, text, score}.
 
-    Exposed as a plain function (not just the tool below) so the
-    retrieval sub-agent's `search_messages` tool and any future
-    non-tool caller share one implementation.
+    Exposed as a plain function (not just the tool below) so this
+    tool's `run()` and any future non-tool caller share one
+    implementation.
     """
     index = _INDICES.get(tenant_id)
     if index is None or len(index.messages) == 0:
@@ -92,24 +92,18 @@ def search_messages_for_tenant(tenant_id: str, query: str, top_k: int = 5) -> li
     ]
 
 
-class SearchMessagesArgs(BaseModel):
+class SearchMessagesTool(ToolSchema):
+    TOOL_NAME = "search_messages"
+    TOOL_DESCRIPTION = "Semantic search over this tenant's chat history. Returns the top-k most relevant messages."
+
     query: str = Field(description="What to search for, in plain English.")
     top_k: int = Field(default=5, description="How many results to return, most relevant first.")
 
-
-def _search_messages(args: SearchMessagesArgs, state: SessionState) -> str:
-    results = search_messages_for_tenant(state.tenant_id, args.query, args.top_k)
-    if not results:
-        return f"No chat messages found for '{args.query}'."
-    return "\n".join(
-        f"[{r['message_id']}] {r['sender']} ({r['timestamp']}): {r['text']} (score={r['score']:.3f})"
-        for r in results
-    )
-
-
-search_messages_tool = Tool(
-    name="search_messages",
-    description="Semantic search over this tenant's chat history. Returns the top-k most relevant messages.",
-    args_schema=SearchMessagesArgs,
-    handler=_search_messages,
-)
+    def run(self, state: SessionState) -> str:
+        results = search_messages_for_tenant(state.tenant_id, self.query, self.top_k)
+        if not results:
+            return f"No chat messages found for '{self.query}'."
+        return "\n".join(
+            f"[{r['message_id']}] {r['sender']} ({r['timestamp']}): {r['text']} (score={r['score']:.3f})"
+            for r in results
+        )

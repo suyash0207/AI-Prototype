@@ -16,7 +16,12 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from app.domain.enums import CanonicalEntityType, KnowledgeSource, OrderStatus, PurchaseOrderStatus
+from app.domain.enums import (
+    CanonicalEntityType,
+    KnowledgeSource,
+    OrderStatus,
+    PurchaseOrderStatus,
+)
 
 
 class LLMReadableEntity(BaseModel, ABC):
@@ -31,10 +36,10 @@ class LLMReadableEntity(BaseModel, ABC):
 class Supplier(LLMReadableEntity):
     """A company that sells us raw materials -- we buy things from suppliers."""
 
-    id: UUID                # random unique id, internal only
-    tenant_id: str          # which business this belongs to
-    reference_code: str     # short id people say out loud, e.g. "SUP-1043"
-    name: str                # full name, e.g. "Supplier B Ltd."
+    id: UUID  # random unique id, internal only
+    tenant_id: str  # which business this belongs to
+    reference_code: str  # short id people say out loud, e.g. "SUP-1043"
+    name: str  # full name, e.g. "Supplier B Ltd."
 
     def to_llm_readable_output(self) -> str:
         return f"Supplier {self.name} ({self.reference_code})"
@@ -45,8 +50,8 @@ class Customer(LLMReadableEntity):
 
     id: UUID
     tenant_id: str
-    reference_code: str     # e.g. "CUST-0078"
-    name: str                # e.g. "Sharma Fabrics"
+    reference_code: str  # e.g. "CUST-0078"
+    name: str  # e.g. "Sharma Fabrics"
 
     def to_llm_readable_output(self) -> str:
         return f"Customer {self.name} ({self.reference_code})"
@@ -55,14 +60,14 @@ class Customer(LLMReadableEntity):
 class PurchaseOrder(LLMReadableEntity):
     """An order we placed with a supplier to buy goods, and how much has arrived so far."""
 
-    id: UUID                             # random unique id, internal only
-    tenant_id: str                       # which business this belongs to
-    reference_code: str                  # short id people say out loud, e.g. "PO-4812"
-    supplier_id: UUID                    # which supplier this order was placed with
-    status: PurchaseOrderStatus          # where the order stands right now
-    quantity: int                        # how many units we ordered in total
-    received_quantity: int               # how many units have actually shown up so far
-    due_date: date | None                # the date the supplier promised delivery by
+    id: UUID  # random unique id, internal only
+    tenant_id: str  # which business this belongs to
+    reference_code: str  # short id people say out loud, e.g. "PO-4812"
+    supplier_id: UUID  # which supplier this order was placed with
+    status: PurchaseOrderStatus  # where the order stands right now
+    quantity: int  # how many units we ordered in total
+    received_quantity: int  # how many units have actually shown up so far
+    due_date: date | None  # the date the supplier promised delivery by
     created_at: datetime
 
     def to_llm_readable_output(self) -> str:
@@ -79,14 +84,16 @@ class Order(LLMReadableEntity):
 
     id: UUID
     tenant_id: str
-    reference_code: str        # e.g. "ORD-2201"
-    customer_id: UUID          # which customer placed this order
-    status: OrderStatus        # where the order stands right now
+    reference_code: str  # e.g. "ORD-2201"
+    customer_id: UUID  # which customer placed this order
+    status: OrderStatus  # where the order stands right now
     promised_date: date | None  # the date we told the customer to expect it
     created_at: datetime
 
     def to_llm_readable_output(self) -> str:
-        promised = self.promised_date.isoformat() if self.promised_date else "unspecified"
+        promised = (
+            self.promised_date.isoformat() if self.promised_date else "unspecified"
+        )
         return f"Order {self.reference_code}: status={self.status.value}, promised={promised}"
 
 
@@ -95,9 +102,9 @@ class Invoice(LLMReadableEntity):
 
     id: UUID
     tenant_id: str
-    reference_code: str    # e.g. "INV-9931"
-    customer_id: UUID      # which customer this bill was sent to
-    amount: float           # the total amount billed on this invoice
+    reference_code: str  # e.g. "INV-9931"
+    customer_id: UUID  # which customer this bill was sent to
+    amount: float  # the total amount billed on this invoice
     created_at: datetime
 
     def to_llm_readable_output(self) -> str:
@@ -109,8 +116,8 @@ class Payment(LLMReadableEntity):
 
     id: UUID
     tenant_id: str
-    invoice_id: UUID    # which invoice this payment was made against
-    amount: float         # how much was paid in this one payment
+    invoice_id: UUID  # which invoice this payment was made against
+    amount: float  # how much was paid in this one payment
     paid_at: datetime
 
     def to_llm_readable_output(self) -> str:
@@ -122,9 +129,9 @@ class InventoryItem(LLMReadableEntity):
 
     id: UUID
     tenant_id: str
-    sku: str            # the stock-keeping code for this item, e.g. "DYE-BLU-40"
-    description: str    # plain-English name of the item, e.g. "Blue dye, 40kg drum"
-    quantity: int         # how many units of this item we currently have on hand
+    sku: str  # the stock-keeping code for this item, e.g. "DYE-BLU-40"
+    description: str  # plain-English name of the item, e.g. "Blue dye, 40kg drum"
+    quantity: int  # how many units of this item we currently have on hand
 
     def to_llm_readable_output(self) -> str:
         return f"{self.description} ({self.sku}): quantity={self.quantity}"
@@ -139,8 +146,8 @@ class CustomerOutstanding(LLMReadableEntity):
     """
 
     customer: Customer
-    invoiced: float   # sum of that customer's invoice amounts
-    paid: float        # sum of that customer's payment amounts
+    invoiced: float  # sum of that customer's invoice amounts
+    paid: float  # sum of that customer's payment amounts
     outstanding: float  # invoiced - paid
 
     def to_llm_readable_output(self) -> str:
@@ -158,11 +165,11 @@ class KnowledgeBaseEntry(LLMReadableEntity):
 
     id: UUID
     tenant_id: str
-    alias_text: str                    # the informal phrase as written in chat, e.g. "supp B"
+    alias_text: str  # the informal phrase as written in chat, e.g. "supp B"
     canonical_type: CanonicalEntityType  # which kind of ERP record this points to
-    canonical_id: UUID                  # the id of that exact ERP record
-    confidence: float                    # how sure we are this mapping is correct, 0 to 1
-    source: KnowledgeSource               # how this mapping came to exist
+    canonical_id: UUID  # the id of that exact ERP record
+    confidence: float  # how sure we are this mapping is correct, 0 to 1
+    source: KnowledgeSource  # how this mapping came to exist
 
     def to_llm_readable_output(self) -> str:
         return (
@@ -180,11 +187,15 @@ class ChatClaim(LLMReadableEntity):
     provenance ledger and later cross-check it against SQL.
     """
 
-    message_ref: str                  # which chat message this claim came from, e.g. "msg:tenant_a:0042"
-    sender: str                        # who sent that message
-    timestamp: datetime                # when that message was sent
-    extracted_claim: str               # the plain-English fact pulled out of the message
-    linked_entity: str | None = None   # resolved reference_code this claim is about, if any (e.g. "SUP-1043")
+    message_ref: (
+        str  # which chat message this claim came from, e.g. "msg:tenant_a:0042"
+    )
+    sender: str  # who sent that message
+    timestamp: datetime  # when that message was sent
+    extracted_claim: str  # the plain-English fact pulled out of the message
+    linked_entity: str | None = (
+        None  # resolved reference_code this claim is about, if any (e.g. "SUP-1043")
+    )
 
     def to_llm_readable_output(self) -> str:
         entity = self.linked_entity or "unlinked"

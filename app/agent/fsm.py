@@ -28,8 +28,8 @@ def has_tool_call(message: dict) -> bool:
 
 
 def should_terminate_after_tools(last_tool_message: dict, tool_registry: ToolRegistry) -> bool:
-    tool = tool_registry.get(last_tool_message.get("name", ""))
-    if tool is None or not tool.is_response_tool:
+    tool_cls = tool_registry.get(last_tool_message.get("name", ""))
+    if tool_cls is None or not tool_cls.IS_RESPONSE_TOOL:
         return False
     return not last_tool_message["content"].startswith(TOOL_ERROR_PREFIX)
 
@@ -49,24 +49,29 @@ def invoke_tools(state: SessionState, tool_registry: ToolRegistry) -> None:
     for call in last_message.get("tool_calls", []):
         function = call["function"]
         tool_name = function["name"]
-        tool = tool_registry.get(tool_name)
+        tool_cls = tool_registry.get(tool_name)
 
-        if tool is None:
+        if tool_cls is None:
             state.add_tool_output(
                 call["id"], tool_name, f"{TOOL_ERROR_PREFIX}unknown tool '{tool_name}'"
             )
             continue
 
         try:
-            args = tool.args_schema.model_validate_json(function["arguments"])
+            instance = tool_cls.model_validate_json(function["arguments"])
         except Exception as exc:  # noqa: BLE001 - surfaced to the model as a tool error, not raised
             state.add_tool_output(
-                call["id"], tool.name, f"{TOOL_ERROR_PREFIX}invalid arguments: {exc}"
+                call["id"], tool_name, f"{TOOL_ERROR_PREFIX}invalid arguments: {exc}"
             )
             continue
 
-        result = tool.handler(args, state)
-        state.add_tool_output(call["id"], tool.name, result)
+        errors = instance.validate(state)
+        if errors:
+            state.add_tool_output(call["id"], tool_name, f"{TOOL_ERROR_PREFIX}{'; '.join(errors)}")
+            continue
+
+        result = instance.run(state)
+        state.add_tool_output(call["id"], tool_name, result)
 
 
 def run_workflow(state: SessionState, tool_registry: ToolRegistry) -> str:

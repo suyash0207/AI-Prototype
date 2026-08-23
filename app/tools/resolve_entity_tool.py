@@ -25,23 +25,15 @@ from __future__ import annotations
 from difflib import SequenceMatcher
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from app.db import run_query
 from app.domain.enums import CanonicalEntityType
-from app.repositories.customer_repository import CustomerRepository
-from app.repositories.inventory_repository import InventoryRepository
 from app.repositories.knowledge_base_repository import KnowledgeBaseRepository
-from app.repositories.purchase_order_repository import PurchaseOrderRepository
-from app.repositories.supplier_repository import SupplierRepository
 from app.state.session_state import SessionState
-from app.tools.base import Tool
+from app.tools.base import ToolSchema
 
 _knowledge_repo = KnowledgeBaseRepository()
-_supplier_repo = SupplierRepository()
-_customer_repo = CustomerRepository()
-_inventory_repo = InventoryRepository()
-_purchase_order_repo = PurchaseOrderRepository()
 
 # A "resolved" classification needs the top candidate at/above this score,
 # AND a clear enough gap over the runner-up -- both hardcoded, deterministic
@@ -122,12 +114,6 @@ def _candidates_for_tenant(tenant_id: str, mention: str) -> list[dict]:
     return candidates
 
 
-class ResolveEntityArgs(BaseModel):
-    mention: str = Field(
-        description="The informal phrase to link, e.g. 'supp B', '4812', or 'the blue thread guys'."
-    )
-
-
 _CANONICAL_TABLES: dict[CanonicalEntityType, tuple[str, str]] = {
     CanonicalEntityType.SUPPLIER: ("suppliers", "reference_code"),
     CanonicalEntityType.CUSTOMER: ("customers", "reference_code"),
@@ -138,11 +124,12 @@ _CANONICAL_TABLES: dict[CanonicalEntityType, tuple[str, str]] = {
 
 
 def _reference_code_for(tenant_id: str, canonical_type: CanonicalEntityType, canonical_id: UUID) -> str | None:
-    """Reverses `_lookup_canonical_id`: turns a knowledge_base row's
-    internal canonical_id back into the human-facing code every other
-    tool actually expects. Without this, `resolve_entity` would hand the
-    model a raw UUID -- exactly the internal-only value the rest of the
-    domain layer promises never to surface (see PLAN.md section 2).
+    """Reverses `_lookup_canonical_id` (in confirm_entity_link_tool.py):
+    turns a knowledge_base row's internal canonical_id back into the
+    human-facing code every other tool actually expects. Without this,
+    `resolve_entity` would hand the model a raw UUID -- exactly the
+    internal-only value the rest of the domain layer promises never to
+    surface (see PLAN.md section 2).
     """
     table = _CANONICAL_TABLES.get(canonical_type)
     if table is None:
@@ -171,115 +158,61 @@ def _find_trusted_fuzzy(tenant_id: str, mention: str):
     return None
 
 
-def _resolve_entity(args: ResolveEntityArgs, state: SessionState) -> str:
-    trusted = _knowledge_repo.find_trusted(state.tenant_id, args.mention) or _find_trusted_fuzzy(
-        state.tenant_id, args.mention
-    )
-    if trusted is not None:
-        reference_code = _reference_code_for(state.tenant_id, trusted.canonical_type, trusted.canonical_id)
-        pointer = reference_code or str(trusted.canonical_id)
-        return (
-            f"RESOLVED (trusted, source={trusted.source.value}): '{args.mention}' = "
-            f"{trusted.canonical_type.value}:{pointer}. Use '{pointer}' as the search/reference "
-            "value in other tools -- never the raw internal id."
-        )
-
-    candidates = _candidates_for_tenant(state.tenant_id, args.mention)[:_MAX_CANDIDATES_SHOWN]
-    if not candidates:
-        return f"UNRESOLVED: no candidates found for '{args.mention}'."
-
-    top = candidates[0]
-    second = candidates[1] if len(candidates) > 1 else None
-    margin = top["confidence"] - (second["confidence"] if second else 0.0)
-
-    if top["confidence"] < _RESOLVED_THRESHOLD:
-        status = "unresolved"
-    elif second is not None and margin < _MARGIN_THRESHOLD:
-        status = "ambiguous"
-    else:
-        status = "resolved"
-
-    # Deliberately never prints the bare word "RESOLVED" here -- that word is
-    # reserved for the trusted-lookup branch above. This is only a
-    # classification of *candidate quality*, not a trust decision.
-    lines = [
-        f"CANDIDATES (classification={status}, none confirmed by a person -- do NOT treat any as fact):"
-    ]
-    for c in candidates:
-        lines.append(
-            f"- {c['canonical_type'].value}:{c['reference_code']} \"{c['label']}\" "
-            f"(confidence={c['confidence']:.2f})"
-        )
-    lines.append(
-        "If this mention matters for a number or fact in your answer, call ask_clarification with "
-        "these candidates before using any of them -- even the top-scored one. Once the user picks "
-        "one, call confirm_entity_link to record it; resolve_entity will then return it as trusted."
-    )
-    return "\n".join(lines)
-
-
-resolve_entity_tool = Tool(
-    name="resolve_entity",
-    description=(
+class ResolveEntityTool(ToolSchema):
+    TOOL_NAME = "resolve_entity"
+    TOOL_DESCRIPTION = (
         "Look up what ERP record an informal mention refers to (e.g. 'supp B', '4812', 'the blue "
         "thread guys'). Checks the trusted knowledge base first; if nothing trusted matches, returns "
         "fuzzy candidates that must go through ask_clarification + confirm_entity_link before being "
         "trusted. Available to both the orchestrator and the retrieval sub-agent."
-    ),
-    args_schema=ResolveEntityArgs,
-    handler=_resolve_entity,
-)
-
-
-def _lookup_canonical_id(tenant_id: str, canonical_type: CanonicalEntityType, reference_code: str) -> UUID | None:
-    if canonical_type == CanonicalEntityType.SUPPLIER:
-        entity = _supplier_repo.find_one_by_search_term(tenant_id, reference_code)
-    elif canonical_type == CanonicalEntityType.CUSTOMER:
-        entity = _customer_repo.find_one_by_search_term(tenant_id, reference_code)
-    elif canonical_type == CanonicalEntityType.INVENTORY_ITEM:
-        entity = _inventory_repo.find_one_by_search_term(tenant_id, reference_code)
-    elif canonical_type == CanonicalEntityType.PURCHASE_ORDER:
-        entity = _purchase_order_repo.get_by_reference_code(tenant_id, reference_code)
-    else:
-        entity = None
-    return entity.id if entity else None
-
-
-class ConfirmEntityLinkArgs(BaseModel):
-    mention: str = Field(description="The exact informal phrase being confirmed, e.g. 'the blue thread guys'.")
-    canonical_type: CanonicalEntityType = Field(description="Which kind of ERP record this mention refers to.")
-    reference_code: str = Field(
-        description="The human-facing reference_code of the exact record the user confirmed, e.g. 'SUP-1043'."
     )
 
-
-def _confirm_entity_link(args: ConfirmEntityLinkArgs, state: SessionState) -> str:
-    """Called only after a user has explicitly answered an
-    `ask_clarification` question -- never on the strength of a model's
-    own confidence, no matter how high `resolve_entity` scored it.
-    """
-    canonical_id = _lookup_canonical_id(state.tenant_id, args.canonical_type, args.reference_code)
-    if canonical_id is None:
-        return f"No {args.canonical_type.value} found with reference_code '{args.reference_code}'."
-
-    entry = _knowledge_repo.insert_user_confirmed(
-        state.tenant_id, args.mention, args.canonical_type, canonical_id
-    )
-    return (
-        f"Recorded: '{entry.alias_text}' now resolves to {entry.canonical_type.value}:{args.reference_code} "
-        "(source=user_confirmed). Future mentions of this phrase resolve directly, no more confirmation needed."
+    mention: str = Field(
+        description="The informal phrase to link, e.g. 'supp B', '4812', or 'the blue thread guys'."
     )
 
+    def run(self, state: SessionState) -> str:
+        trusted = _knowledge_repo.find_trusted(state.tenant_id, self.mention) or _find_trusted_fuzzy(
+            state.tenant_id, self.mention
+        )
+        if trusted is not None:
+            reference_code = _reference_code_for(state.tenant_id, trusted.canonical_type, trusted.canonical_id)
+            pointer = reference_code or str(trusted.canonical_id)
+            return (
+                f"RESOLVED (trusted, source={trusted.source.value}): '{self.mention}' = "
+                f"{trusted.canonical_type.value}:{pointer}. Use '{pointer}' as the search/reference "
+                "value in other tools -- never the raw internal id."
+            )
 
-confirm_entity_link_tool = Tool(
-    name="confirm_entity_link",
-    description=(
-        "Record a user-confirmed mapping from an informal mention to an exact ERP record, after the "
-        "user replies to an ask_clarification question. Never call this without an explicit user "
-        "confirmation -- a high resolve_entity confidence score is not a confirmation."
-    ),
-    args_schema=ConfirmEntityLinkArgs,
-    handler=_confirm_entity_link,
-)
+        candidates = _candidates_for_tenant(state.tenant_id, self.mention)[:_MAX_CANDIDATES_SHOWN]
+        if not candidates:
+            return f"UNRESOLVED: no candidates found for '{self.mention}'."
 
-ENTITY_LINK_TOOLS = [resolve_entity_tool, confirm_entity_link_tool]
+        top = candidates[0]
+        second = candidates[1] if len(candidates) > 1 else None
+        margin = top["confidence"] - (second["confidence"] if second else 0.0)
+
+        if top["confidence"] < _RESOLVED_THRESHOLD:
+            status = "unresolved"
+        elif second is not None and margin < _MARGIN_THRESHOLD:
+            status = "ambiguous"
+        else:
+            status = "resolved"
+
+        # Deliberately never prints the bare word "RESOLVED" here -- that word is
+        # reserved for the trusted-lookup branch above. This is only a
+        # classification of *candidate quality*, not a trust decision.
+        lines = [
+            f"CANDIDATES (classification={status}, none confirmed by a person -- do NOT treat any as fact):"
+        ]
+        for c in candidates:
+            lines.append(
+                f"- {c['canonical_type'].value}:{c['reference_code']} \"{c['label']}\" "
+                f"(confidence={c['confidence']:.2f})"
+            )
+        lines.append(
+            "If this mention matters for a number or fact in your answer, call ask_clarification with "
+            "these candidates before using any of them -- even the top-scored one. Once the user picks "
+            "one, call confirm_entity_link to record it; resolve_entity will then return it as trusted."
+        )
+        return "\n".join(lines)

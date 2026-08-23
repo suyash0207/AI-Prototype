@@ -8,12 +8,11 @@ from pathlib import Path
 
 from app.agent import fsm
 from app.state.store import get_or_create_session
-from app.tools.ask_clarification_tool import ask_clarification_tool
+from app.tools.ask_clarification_tool import AskClarificationTool
 from app.tools.base import build_tool_registry
-from app.tools.entity_link_tools import ENTITY_LINK_TOOLS
-from app.tools.final_answer_tool import final_answer_tool
-from app.tools.retrieval_tool import retrieve_from_chat_tool
-from app.tools.sql_tools import SQL_TOOLS
+from app.tools.final_answer_tool import FinalAnswerTool
+from app.tools.groups import ENTITY_LINK_TOOLS, SQL_TOOLS
+from app.tools.retrieve_from_chat_tool import RetrieveFromChatTool
 
 _PROMPT_PATH = Path(__file__).resolve().parent.parent / "prompts" / "orchestrator.txt"
 _SYSTEM_PROMPT = _PROMPT_PATH.read_text()
@@ -23,7 +22,7 @@ _SYSTEM_PROMPT = _PROMPT_PATH.read_text()
 # ever sees chat data as `retrieve_from_chat`'s structured, ledger-backed
 # claims, never raw message text it could misquote.
 ORCHESTRATOR_TOOLS = build_tool_registry(
-    [final_answer_tool, ask_clarification_tool, *SQL_TOOLS, retrieve_from_chat_tool, *ENTITY_LINK_TOOLS]
+    [FinalAnswerTool, AskClarificationTool, *SQL_TOOLS, RetrieveFromChatTool, *ENTITY_LINK_TOOLS]
 )
 
 

@@ -12,22 +12,52 @@ import random
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta
 
-from psycopg.types.json import Json  # noqa: F401  (kept for future JSON columns; unused today)
-
 from app.db import get_pool
 
 _SUPPLIER_NAMES = [
-    "Radha Textiles", "Om Dyeworks", "Krishna Yarns", "Ganesh Fabrics", "Bharat Weaving Co",
-    "Shiva Cotton Mills", "Laxmi Threads", "Vishnu Chemicals", "Annapurna Dyers", "Surya Textiles",
-    "Ashoka Fibres", "Ganga Spinners", "Himalaya Dye Works", "Indus Cotton", "Jai Bharat Yarns",
-    "Kaveri Fabrics", "Malabar Weaves", "Narmada Textiles", "Prakash Dyers", "Sundaram Mills",
+    "Radha Textiles",
+    "Om Dyeworks",
+    "Krishna Yarns",
+    "Ganesh Fabrics",
+    "Bharat Weaving Co",
+    "Shiva Cotton Mills",
+    "Laxmi Threads",
+    "Vishnu Chemicals",
+    "Annapurna Dyers",
+    "Surya Textiles",
+    "Ashoka Fibres",
+    "Ganga Spinners",
+    "Himalaya Dye Works",
+    "Indus Cotton",
+    "Jai Bharat Yarns",
+    "Kaveri Fabrics",
+    "Malabar Weaves",
+    "Narmada Textiles",
+    "Prakash Dyers",
+    "Sundaram Mills",
 ]
 
 _CUSTOMER_NAMES = [
-    "Sharma Fabrics", "Verma Garments", "Gupta Textiles", "Iyer Exports", "Patel Clothing",
-    "Reddy Apparel", "Chopra Fashions", "Nair Garments", "Mehta Textiles", "Joshi Exports",
-    "Kumar Apparel", "Singh Fabrics", "Rao Clothing", "Desai Garments", "Bose Textiles",
-    "Kapoor Exports", "Agarwal Fashions", "Menon Apparel", "Saxena Fabrics", "Pillai Garments",
+    "Sharma Fabrics",
+    "Verma Garments",
+    "Gupta Textiles",
+    "Iyer Exports",
+    "Patel Clothing",
+    "Reddy Apparel",
+    "Chopra Fashions",
+    "Nair Garments",
+    "Mehta Textiles",
+    "Joshi Exports",
+    "Kumar Apparel",
+    "Singh Fabrics",
+    "Rao Clothing",
+    "Desai Garments",
+    "Bose Textiles",
+    "Kapoor Exports",
+    "Agarwal Fashions",
+    "Menon Apparel",
+    "Saxena Fabrics",
+    "Pillai Garments",
 ]
 
 _INVENTORY_ITEMS = [
@@ -66,7 +96,9 @@ def wipe_tenant(tenant_id: str) -> None:
             cur.execute("DELETE FROM payments WHERE tenant_id = %s", (tenant_id,))
             cur.execute("DELETE FROM invoices WHERE tenant_id = %s", (tenant_id,))
             cur.execute("DELETE FROM orders WHERE tenant_id = %s", (tenant_id,))
-            cur.execute("DELETE FROM purchase_orders WHERE tenant_id = %s", (tenant_id,))
+            cur.execute(
+                "DELETE FROM purchase_orders WHERE tenant_id = %s", (tenant_id,)
+            )
             cur.execute("DELETE FROM inventory WHERE tenant_id = %s", (tenant_id,))
             cur.execute("DELETE FROM knowledge_base WHERE tenant_id = %s", (tenant_id,))
             cur.execute("DELETE FROM customers WHERE tenant_id = %s", (tenant_id,))
@@ -98,7 +130,9 @@ def insert_customer(tenant_id: str, reference_code: str, name: str) -> str:
     return str(customer_id)
 
 
-def insert_inventory_item(tenant_id: str, sku: str, description: str, quantity: int) -> str:
+def insert_inventory_item(
+    tenant_id: str, sku: str, description: str, quantity: int
+) -> str:
     with get_pool().connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -126,7 +160,15 @@ def insert_purchase_order(
                 "INSERT INTO purchase_orders "
                 "(tenant_id, reference_code, supplier_id, status, quantity, received_quantity, due_date) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id",
-                (tenant_id, reference_code, supplier_id, status, quantity, received_quantity, due_date),
+                (
+                    tenant_id,
+                    reference_code,
+                    supplier_id,
+                    status,
+                    quantity,
+                    received_quantity,
+                    due_date,
+                ),
             )
             po_id = cur.fetchone()[0]
         conn.commit()
@@ -134,7 +176,11 @@ def insert_purchase_order(
 
 
 def insert_order(
-    tenant_id: str, reference_code: str, customer_id: str, status: str, promised_date: date | None
+    tenant_id: str,
+    reference_code: str,
+    customer_id: str,
+    status: str,
+    promised_date: date | None,
 ) -> str:
     with get_pool().connection() as conn:
         with conn.cursor() as cur:
@@ -148,7 +194,9 @@ def insert_order(
     return str(order_id)
 
 
-def insert_invoice(tenant_id: str, reference_code: str, customer_id: str, amount: float) -> str:
+def insert_invoice(
+    tenant_id: str, reference_code: str, customer_id: str, amount: float
+) -> str:
     with get_pool().connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -161,7 +209,9 @@ def insert_invoice(tenant_id: str, reference_code: str, customer_id: str, amount
     return str(invoice_id)
 
 
-def insert_payment(tenant_id: str, invoice_id: str, amount: float, paid_at: datetime) -> None:
+def insert_payment(
+    tenant_id: str, invoice_id: str, amount: float, paid_at: datetime
+) -> None:
     with get_pool().connection() as conn:
         with conn.cursor() as cur:
             cur.execute(
@@ -185,12 +235,21 @@ def insert_knowledge_base_row(
                 "INSERT INTO knowledge_base "
                 "(tenant_id, alias_text, canonical_type, canonical_id, confidence, source) "
                 "VALUES (%s, %s, %s, %s, %s, %s)",
-                (tenant_id, alias_text, canonical_type, canonical_id, confidence, source),
+                (
+                    tenant_id,
+                    alias_text,
+                    canonical_type,
+                    canonical_id,
+                    confidence,
+                    source,
+                ),
             )
         conn.commit()
 
 
-def generate_suppliers(tenant_id: str, count: int, name_shuffle_seed: int) -> dict[str, str]:
+def generate_suppliers(
+    tenant_id: str, count: int, name_shuffle_seed: int
+) -> dict[str, str]:
     """Insert `count` generated suppliers (reference codes SUP-2000+),
     returning {reference_code: id}. Anchors are inserted separately by
     the caller with their own fixed reference_codes so this never
@@ -206,7 +265,10 @@ def generate_suppliers(tenant_id: str, count: int, name_shuffle_seed: int) -> di
 
 
 def generate_customers(
-    tenant_id: str, count: int, name_shuffle_seed: int, exclude_names: set[str] | None = None
+    tenant_id: str,
+    count: int,
+    name_shuffle_seed: int,
+    exclude_names: set[str] | None = None,
 ) -> dict[str, str]:
     """`exclude_names` keeps generated filler from accidentally duplicating
     an anchor customer's name (e.g. "Sharma Fabrics") -- a name collision
@@ -224,7 +286,11 @@ def generate_customers(
 
 
 def generate_purchase_orders(
-    tenant_id: str, supplier_ids: list[str], count: int, seed: int, start_code: int = 5000
+    tenant_id: str,
+    supplier_ids: list[str],
+    count: int,
+    seed: int,
+    start_code: int = 5000,
 ) -> None:
     rng = random.Random(seed)
     today = date.today()
@@ -232,35 +298,62 @@ def generate_purchase_orders(
         supplier_id = rng.choice(supplier_ids)
         status = rng.choice(_PURCHASE_ORDER_STATUSES)
         quantity = rng.randint(50, 2000)
-        received_quantity = quantity if status == "received" else rng.randint(0, quantity)
+        received_quantity = (
+            quantity if status == "received" else rng.randint(0, quantity)
+        )
         due_date = today + timedelta(days=rng.randint(-30, 30))
         insert_purchase_order(
-            tenant_id, f"PO-{start_code + i}", supplier_id, status, quantity, received_quantity, due_date
+            tenant_id,
+            f"PO-{start_code + i}",
+            supplier_id,
+            status,
+            quantity,
+            received_quantity,
+            due_date,
         )
 
 
-def generate_orders(tenant_id: str, customer_ids: list[str], count: int, seed: int, start_code: int = 3000) -> None:
+def generate_orders(
+    tenant_id: str,
+    customer_ids: list[str],
+    count: int,
+    seed: int,
+    start_code: int = 3000,
+) -> None:
     rng = random.Random(seed)
     today = date.today()
     for i in range(count):
         customer_id = rng.choice(customer_ids)
         status = rng.choice(_ORDER_STATUSES)
         promised_date = today + timedelta(days=rng.randint(-30, 30))
-        insert_order(tenant_id, f"ORD-{start_code + i}", customer_id, status, promised_date)
+        insert_order(
+            tenant_id, f"ORD-{start_code + i}", customer_id, status, promised_date
+        )
 
 
 def generate_invoices_with_payments(
-    tenant_id: str, customer_ids: list[str], count: int, seed: int, start_code: int = 9000
+    tenant_id: str,
+    customer_ids: list[str],
+    count: int,
+    seed: int,
+    start_code: int = 9000,
 ) -> None:
     rng = random.Random(seed)
     now = datetime.now()
     for i in range(count):
         customer_id = rng.choice(customer_ids)
         amount = round(rng.uniform(5_000, 500_000), 2)
-        invoice_id = insert_invoice(tenant_id, f"INV-{start_code + i}", customer_id, amount)
+        invoice_id = insert_invoice(
+            tenant_id, f"INV-{start_code + i}", customer_id, amount
+        )
         if rng.random() < 0.6:
             paid_amount = round(amount * rng.uniform(0.3, 1.0), 2)
-            insert_payment(tenant_id, invoice_id, paid_amount, now - timedelta(days=rng.randint(1, 60)))
+            insert_payment(
+                tenant_id,
+                invoice_id,
+                paid_amount,
+                now - timedelta(days=rng.randint(1, 60)),
+            )
 
 
 def generate_inventory(tenant_id: str, seed: int) -> dict[str, str]:

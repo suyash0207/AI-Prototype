@@ -3,23 +3,6 @@
 -- one database without ever seeing each other's rows. Run this before
 -- knowledge_base.sql (that file adds the bridge to the chat/"unstructured" side).
 
--- Where a purchase order (an order we placed with a supplier) currently stands.
-CREATE TYPE purchase_order_status AS ENUM (
-    'open',                 -- placed, nothing has arrived yet
-    'partially_received',   -- some units arrived, but not all
-    'received',             -- everything we ordered has arrived
-    'cancelled'              -- the order was called off
-);
-
--- Where a customer's order currently stands.
-CREATE TYPE order_status AS ENUM (
-    'pending',    -- placed, not yet on its way
-    'shipped',    -- on its way to the customer
-    'delayed',    -- running later than promised
-    'delivered',  -- customer has received it
-    'cancelled'   -- the order was called off
-);
-
 -- A company that sells raw materials to us. We buy things from suppliers.
 CREATE TABLE suppliers (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(), -- random unique id, internal only, never shown to the model
@@ -42,7 +25,9 @@ CREATE TABLE purchase_orders (
     tenant_id TEXT NOT NULL,
     reference_code TEXT NOT NULL,          -- e.g. "PO-4812"
     supplier_id UUID NOT NULL REFERENCES suppliers(id),
-    status purchase_order_status NOT NULL, -- where the order stands right now
+    -- where the order stands right now: open | partially_received | received | cancelled
+    -- (see app/domain/enums.py's PurchaseOrderStatus -- the sole source of truth for these values)
+    status TEXT NOT NULL,
     quantity INT NOT NULL,                 -- how many units we ordered in total
     received_quantity INT NOT NULL DEFAULT 0, -- how many units have actually shown up so far
     due_date DATE,                         -- the date the supplier promised delivery by
@@ -55,7 +40,9 @@ CREATE TABLE orders (
     tenant_id TEXT NOT NULL,
     reference_code TEXT NOT NULL,        -- e.g. "ORD-2201"
     customer_id UUID NOT NULL REFERENCES customers(id),
-    status order_status NOT NULL,        -- where the order stands right now
+    -- where the order stands right now: pending | shipped | delayed | delivered | cancelled
+    -- (see app/domain/enums.py's OrderStatus -- the sole source of truth for these values)
+    status TEXT NOT NULL,
     promised_date DATE,                  -- the date we told the customer to expect it
     created_at TIMESTAMP NOT NULL DEFAULT now()
 );
