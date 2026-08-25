@@ -2,8 +2,6 @@
 never has to worry about how/when it gets constructed.
 """
 
-from __future__ import annotations
-
 from functools import lru_cache
 
 from openai import OpenAI

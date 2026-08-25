@@ -2,8 +2,6 @@
 for "how much overall are we owed" questions, not just one customer.
 """
 
-from __future__ import annotations
-
 from app.repositories.invoice_repository import InvoiceRepository
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema

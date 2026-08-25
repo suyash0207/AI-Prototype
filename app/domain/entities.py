@@ -8,8 +8,6 @@ entity it's holding -- the "how do we print this to the model"
 question only ever gets answered once per concept, not once per tool.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from datetime import date, datetime
 from uuid import UUID

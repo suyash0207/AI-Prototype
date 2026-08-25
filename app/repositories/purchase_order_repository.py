@@ -1,7 +1,5 @@
 """Row<->entity mapping for `purchase_orders`."""
 
-from __future__ import annotations
-
 from app.db import run_query
 from app.domain.entities import PurchaseOrder
 from app.domain.enums import PurchaseOrderStatus

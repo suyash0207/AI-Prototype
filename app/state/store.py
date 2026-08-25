@@ -5,8 +5,6 @@ fallback to any persistent store on purpose: restarting the process
 drops every session, by design.
 """
 
-from __future__ import annotations
-
 from app.state.session_state import SessionState
 
 _sessions: dict[str, SessionState] = {}

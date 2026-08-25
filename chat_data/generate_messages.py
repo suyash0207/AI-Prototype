@@ -12,8 +12,6 @@ filler chatter referencing real supplier/customer/PO names+codes, so
 `search_messages` has enough volume to make top-k results meaningful.
 """
 
-from __future__ import annotations
-
 import json
 import random
 import sys

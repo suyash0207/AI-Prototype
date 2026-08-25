@@ -10,8 +10,6 @@ no status-streaming UI to feed -- `run()` here is a single synchronous
 string return.
 """
 
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from typing import ClassVar
 

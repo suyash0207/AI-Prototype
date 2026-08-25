@@ -6,8 +6,6 @@ model never gets to state a number, only cite a ref this ledger
 already holds. One instance per session, created in `SessionState`.
 """
 
-from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Literal
 

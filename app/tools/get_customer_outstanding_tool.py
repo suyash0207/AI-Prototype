@@ -5,8 +5,6 @@
 not because the model was trusted to pass the right id.
 """
 
-from __future__ import annotations
-
 from pydantic import Field
 
 from app.repositories.customer_repository import CustomerRepository

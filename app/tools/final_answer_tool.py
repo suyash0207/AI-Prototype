@@ -11,8 +11,6 @@ from SQL" an architectural guarantee instead of a prompt instruction
 the model might ignore.
 """
 
-from __future__ import annotations
-
 import logging
 import re
 
@@ -20,6 +18,7 @@ from pydantic import BaseModel, Field
 
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema
+from app.utils.constants import VALUE_MATCH_TOLERANCE
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +27,6 @@ logger = logging.getLogger(__name__)
 # the verified numbers -- deliberately loose, since this is a warning,
 # not a rejection.
 _NUMBER_PATTERN = re.compile(r"\b\d[\d,]*(?:\.\d+)?\b")
-
-_VALUE_MATCH_TOLERANCE = 0.01
 
 
 class NumberClaim(BaseModel):
@@ -43,7 +40,7 @@ class NumberClaim(BaseModel):
 
 def _values_match(recorded: float | str, claimed: float) -> bool:
     try:
-        return abs(float(recorded) - claimed) < _VALUE_MATCH_TOLERANCE
+        return abs(float(recorded) - claimed) < VALUE_MATCH_TOLERANCE
     except (TypeError, ValueError):
         return False
 

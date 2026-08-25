@@ -5,8 +5,6 @@ chat-derived claim back to a real message the same way it traces a
 SQL number back to a real row, via one shared ref-checking mechanism.
 """
 
-from __future__ import annotations
-
 import json
 import uuid
 

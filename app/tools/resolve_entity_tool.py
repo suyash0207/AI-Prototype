@@ -20,8 +20,6 @@ No code path here writes to `knowledge_base` -- that only happens via
 `confirm_entity_link`, once a person has actually said yes.
 """
 
-from __future__ import annotations
-
 from difflib import SequenceMatcher
 from uuid import UUID
 
@@ -32,25 +30,14 @@ from app.domain.enums import CanonicalEntityType
 from app.repositories.knowledge_base_repository import KnowledgeBaseRepository
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema
+from app.utils.constants import (
+    MARGIN_THRESHOLD,
+    MAX_CANDIDATES_SHOWN,
+    RESOLVED_THRESHOLD,
+    TRUSTED_FUZZY_THRESHOLD,
+)
 
 _knowledge_repo = KnowledgeBaseRepository()
-
-# A "resolved" classification needs the top candidate at/above this score,
-# AND a clear enough gap over the runner-up -- both hardcoded, deterministic
-# cutoffs, not model judgment. Tuned loose enough to catch typos/shorthand
-# ("supp B", "4812") without being so loose it treats an unrelated name as
-# a near-miss.
-_RESOLVED_THRESHOLD = 0.55
-_MARGIN_THRESHOLD = 0.15
-_MAX_CANDIDATES_SHOWN = 5
-
-# How close a mention has to be to an *already-trusted* alias_text (not a
-# raw ERP name) to still count as step 1's deterministic lookup rather
-# than a step-2 fresh guess. Much stricter than _RESOLVED_THRESHOLD --
-# this only forgives minor phrasing noise ("the dye guys" vs "dye guys",
-# a trailing "'s"), it never lets a genuinely different phrase borrow an
-# existing alias's trust.
-_TRUSTED_FUZZY_THRESHOLD = 0.75
 
 
 def _similarity(a: str, b: str) -> float:
@@ -153,7 +140,7 @@ def _find_trusted_fuzzy(tenant_id: str, mention: str):
         score = _similarity(mention, entry.alias_text)
         if score > best_score:
             best, best_score = entry, score
-    if best is not None and best_score >= _TRUSTED_FUZZY_THRESHOLD:
+    if best is not None and best_score >= TRUSTED_FUZZY_THRESHOLD:
         return best
     return None
 
@@ -184,7 +171,7 @@ class ResolveEntityTool(ToolSchema):
                 "value in other tools -- never the raw internal id."
             )
 
-        candidates = _candidates_for_tenant(state.tenant_id, self.mention)[:_MAX_CANDIDATES_SHOWN]
+        candidates = _candidates_for_tenant(state.tenant_id, self.mention)[:MAX_CANDIDATES_SHOWN]
         if not candidates:
             return f"UNRESOLVED: no candidates found for '{self.mention}'."
 
@@ -192,9 +179,9 @@ class ResolveEntityTool(ToolSchema):
         second = candidates[1] if len(candidates) > 1 else None
         margin = top["confidence"] - (second["confidence"] if second else 0.0)
 
-        if top["confidence"] < _RESOLVED_THRESHOLD:
+        if top["confidence"] < RESOLVED_THRESHOLD:
             status = "unresolved"
-        elif second is not None and margin < _MARGIN_THRESHOLD:
+        elif second is not None and margin < MARGIN_THRESHOLD:
             status = "ambiguous"
         else:
             status = "resolved"

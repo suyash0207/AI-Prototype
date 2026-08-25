@@ -15,8 +15,6 @@ persisted anywhere -- a fresh `SessionState` is constructed per call
 and discarded once this function returns.
 """
 
-from __future__ import annotations
-
 from pathlib import Path
 
 from app.agent import fsm

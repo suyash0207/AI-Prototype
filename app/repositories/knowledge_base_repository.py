@@ -2,8 +2,6 @@
 bridge between informal chat mentions and canonical ERP records.
 """
 
-from __future__ import annotations
-
 from uuid import UUID
 
 from app.db import run_query

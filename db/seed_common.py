@@ -6,8 +6,6 @@ vocabulary word) -- the mechanics of "insert N randomish suppliers"
 are identical for both and shouldn't be copy-pasted twice.
 """
 
-from __future__ import annotations
-
 import random
 from dataclasses import dataclass, field
 from datetime import date, datetime, timedelta

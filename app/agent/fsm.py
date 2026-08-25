@@ -15,8 +15,6 @@ That distinction matters: it means "the turn is over" is a fact the
 code can check, not a behavior we're hoping the model exhibits.
 """
 
-from __future__ import annotations
-
 from app import config
 from app.agent.openai_client import get_client
 from app.state.session_state import SessionState

@@ -3,8 +3,6 @@ here" questions where the model doesn't yet have a specific name to
 search for.
 """
 
-from __future__ import annotations
-
 from app.repositories.customer_repository import CustomerRepository
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema

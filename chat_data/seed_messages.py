@@ -10,8 +10,6 @@ this file into memory once at process startup and does plain numpy
 cosine similarity, which is more than fast enough at this data volume.
 """
 
-from __future__ import annotations
-
 import json
 import sys
 from pathlib import Path

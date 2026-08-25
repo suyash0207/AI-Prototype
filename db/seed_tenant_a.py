@@ -8,8 +8,6 @@ explainer almost verbatim -- everything else is generated filler that
 makes the tenant look like a real, populated business.
 """
 
-from __future__ import annotations
-
 import sys
 from datetime import date
 from pathlib import Path

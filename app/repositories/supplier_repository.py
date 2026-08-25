@@ -2,8 +2,6 @@
 the SQL column names and the `Supplier` entity shape.
 """
 
-from __future__ import annotations
-
 from app.db import run_query
 from app.domain.entities import Supplier
 

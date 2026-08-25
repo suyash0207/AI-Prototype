@@ -4,8 +4,6 @@ Purchase orders have no monetary column in this schema -- this is the
 "total PO ___" that's actually answerable (units, not currency).
 """
 
-from __future__ import annotations
-
 from pydantic import Field
 
 from app.domain.enums import PurchaseOrderStatus

@@ -7,8 +7,6 @@ enough that a plain in-process cosine-similarity scan is more than
 fast enough and needs zero extra infrastructure.
 """
 
-from __future__ import annotations
-
 import json
 from pathlib import Path
 
@@ -19,6 +17,7 @@ from app import config
 from app.agent.openai_client import get_client
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema
+from app.utils.constants import SEARCH_MESSAGES_TOP_K
 
 _DATA_DIR = Path(__file__).resolve().parent.parent.parent / "chat_data"
 
@@ -58,7 +57,7 @@ def _load_indices() -> dict[str, _TenantIndex]:
 _INDICES = _load_indices()
 
 
-def search_messages_for_tenant(tenant_id: str, query: str, top_k: int = 5) -> list[dict]:
+def search_messages_for_tenant(tenant_id: str, query: str, top_k: int = SEARCH_MESSAGES_TOP_K) -> list[dict]:
     """Embed `query` and return the top-k most similar messages for this
     tenant, each as {message_id, sender, timestamp, text, score}.
 
@@ -97,10 +96,9 @@ class SearchMessagesTool(ToolSchema):
     TOOL_DESCRIPTION = "Semantic search over this tenant's chat history. Returns the top-k most relevant messages."
 
     query: str = Field(description="What to search for, in plain English.")
-    top_k: int = Field(default=5, description="How many results to return, most relevant first.")
 
     def run(self, state: SessionState) -> str:
-        results = search_messages_for_tenant(state.tenant_id, self.query, self.top_k)
+        results = search_messages_for_tenant(state.tenant_id, self.query, SEARCH_MESSAGES_TOP_K)
         if not results:
             return f"No chat messages found for '{self.query}'."
         return "\n".join(

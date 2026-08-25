@@ -4,8 +4,6 @@ ERP record. Called only after a user has explicitly answered an
 confidence, no matter how high `resolve_entity` scored it.
 """
 
-from __future__ import annotations
-
 from uuid import UUID
 
 from pydantic import Field

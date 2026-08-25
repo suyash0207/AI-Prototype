@@ -5,8 +5,6 @@ later cross-check it against SQL, instead of just trusting a paragraph
 of retrieval-agent-written text.
 """
 
-from __future__ import annotations
-
 from pydantic import BaseModel
 
 from app.state.session_state import SessionState

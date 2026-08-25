@@ -6,8 +6,6 @@ no separate mapping step between "the DB's word for it" and "Python's
 word for it".
 """
 
-from __future__ import annotations
-
 from enum import Enum
 
 

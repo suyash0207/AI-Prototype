@@ -7,8 +7,6 @@ lives only as long as something (the session store) keeps a reference
 to it, and is gone the moment the process restarts.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from app.provenance.tracker import ProvenanceLedger

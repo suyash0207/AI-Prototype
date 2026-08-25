@@ -1,7 +1,5 @@
 """Row<->entity mapping for `orders`."""
 
-from __future__ import annotations
-
 from datetime import date
 
 from app.db import run_query

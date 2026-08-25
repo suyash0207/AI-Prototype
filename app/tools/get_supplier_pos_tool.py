@@ -1,7 +1,5 @@
 """List a supplier's purchase orders, optionally filtered by status."""
 
-from __future__ import annotations
-
 from pydantic import Field
 
 from app.domain.enums import PurchaseOrderStatus

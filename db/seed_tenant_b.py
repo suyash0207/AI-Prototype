@@ -9,8 +9,6 @@ setup: tenant A calls it a "lot", tenant B calls the same kind of
 thing a "batch" -- proving entity linking doesn't fork per tenant.
 """
 
-from __future__ import annotations
-
 import sys
 from datetime import date
 from pathlib import Path

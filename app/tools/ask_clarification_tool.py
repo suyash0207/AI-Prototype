@@ -9,8 +9,6 @@ way, but this one hands the candidate list back to the user instead of
 a completed answer.
 """
 
-from __future__ import annotations
-
 from pydantic import BaseModel, Field
 
 from app.state.session_state import SessionState

@@ -1,7 +1,5 @@
 """FastAPI entrypoint. Run with: uvicorn app.main:app --reload"""
 
-from __future__ import annotations
-
 from pathlib import Path
 
 from fastapi import FastAPI

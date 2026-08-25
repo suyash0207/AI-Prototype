@@ -1,7 +1,5 @@
 """Row<->entity mapping for `inventory`."""
 
-from __future__ import annotations
-
 from app.db import run_query
 from app.domain.entities import InventoryItem
 

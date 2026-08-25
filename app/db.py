@@ -6,8 +6,6 @@ PLAN.md section 2.2): swapping the DB library or even the database
 engine later would only mean touching this one file.
 """
 
-from __future__ import annotations
-
 from typing import Any
 
 from psycopg.rows import dict_row
