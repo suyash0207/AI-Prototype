@@ -19,6 +19,8 @@ class GetLateOrdersTool(ToolSchema):
         "List every order that is not delivered/cancelled and whose promised date has "
         "already passed."
     )
+    REQUIRES_PLAN = True
+    SOURCE_KIND = "sql"
 
     as_of_date: date | None = Field(
         default=None,

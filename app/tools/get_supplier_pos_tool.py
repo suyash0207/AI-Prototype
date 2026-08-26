@@ -2,11 +2,12 @@
 
 from pydantic import Field
 
-from app.domain.enums import PurchaseOrderStatus
+from app.domain.enums import CanonicalEntityType, PurchaseOrderStatus
 from app.repositories.purchase_order_repository import PurchaseOrderRepository
 from app.repositories.supplier_repository import SupplierRepository
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema
+from app.tools.resolve_entity_tool import resolve_trusted_search_term
 
 _supplier_repo = SupplierRepository()
 _purchase_order_repo = PurchaseOrderRepository()
@@ -29,6 +30,8 @@ def _format_po_with_provenance(po, state: SessionState) -> str:
 class GetSupplierPOsTool(ToolSchema):
     TOOL_NAME = "get_supplier_pos"
     TOOL_DESCRIPTION = "List a supplier's purchase orders, optionally filtered by status."
+    REQUIRES_PLAN = True
+    SOURCE_KIND = "sql"
 
     supplier_search: str = Field(
         description="The supplier's reference code (e.g. 'SUP-1043') or name/partial name (e.g. 'Supplier B')."
@@ -38,8 +41,12 @@ class GetSupplierPOsTool(ToolSchema):
     )
 
     def run(self, state: SessionState) -> str:
+        # See get_customer_outstanding_tool.py's run() for why this rewrite exists.
+        search_term = resolve_trusted_search_term(
+            state.tenant_id, CanonicalEntityType.SUPPLIER, self.supplier_search
+        )
         try:
-            supplier = _supplier_repo.find_one_by_search_term(state.tenant_id, self.supplier_search)
+            supplier = _supplier_repo.find_one_by_search_term(state.tenant_id, search_term)
         except ValueError:
             return f"Multiple suppliers match '{self.supplier_search}', be more specific."
         if supplier is None:

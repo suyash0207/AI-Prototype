@@ -42,7 +42,9 @@ def _load_indices() -> dict[str, _TenantIndex]:
     indices: dict[str, _TenantIndex] = {}
     for tenant_id, entries in raw_embeddings.items():
         messages_path = _DATA_DIR / f"{tenant_id}_messages.json"
-        messages_by_id = {m["message_id"]: m for m in json.loads(messages_path.read_text())}
+        messages_by_id = {
+            m["message_id"]: m for m in json.loads(messages_path.read_text())
+        }
 
         ordered_messages = [messages_by_id[e["message_id"]] for e in entries]
         matrix = np.array([e["vector"] for e in entries], dtype=np.float32)
@@ -57,7 +59,9 @@ def _load_indices() -> dict[str, _TenantIndex]:
 _INDICES = _load_indices()
 
 
-def search_messages_for_tenant(tenant_id: str, query: str, top_k: int = SEARCH_MESSAGES_TOP_K) -> list[dict]:
+def search_messages_for_tenant(
+    tenant_id: str, query: str, top_k: int = SEARCH_MESSAGES_TOP_K
+) -> list[dict]:
     """Embed `query` and return the top-k most similar messages for this
     tenant, each as {message_id, sender, timestamp, text, score}.
 
@@ -70,7 +74,9 @@ def search_messages_for_tenant(tenant_id: str, query: str, top_k: int = SEARCH_M
         return []
 
     client = get_client()
-    response = client.embeddings.create(model=config.OPENAI_EMBEDDING_MODEL, input=[query])
+    response = client.embeddings.create(
+        model=config.OPENAI_EMBEDDING_MODEL, input=[query]
+    )
     query_vector = np.array(response.data[0].embedding, dtype=np.float32)
     query_norm = np.linalg.norm(query_vector)
     if query_norm > 0:
@@ -98,7 +104,9 @@ class SearchMessagesTool(ToolSchema):
     query: str = Field(description="What to search for, in plain English.")
 
     def run(self, state: SessionState) -> str:
-        results = search_messages_for_tenant(state.tenant_id, self.query, SEARCH_MESSAGES_TOP_K)
+        results = search_messages_for_tenant(
+            state.tenant_id, self.query, SEARCH_MESSAGES_TOP_K
+        )
         if not results:
             return f"No chat messages found for '{self.query}'."
         return "\n".join(

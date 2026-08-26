@@ -6,3 +6,6 @@ venv/
 
 # Regenerable artifact: precomputed chat embeddings (run chat_data/seed_messages.py to rebuild).
 chat_data/embeddings.json
+
+# Regenerable artifact: precomputed entity-name/alias embeddings (run db/embed_entities.py to rebuild).
+db/entity_embeddings.json

@@ -21,6 +21,8 @@ class GetTotalPOQuantityTool(ToolSchema):
         "by status. Purchase orders have no monetary amount in this schema -- use this for "
         "'total units on order' questions, not ₹ value questions."
     )
+    REQUIRES_PLAN = True
+    SOURCE_KIND = "sql"
 
     status: PurchaseOrderStatus | None = Field(
         default=None, description="Optionally filter to only POs in this status."

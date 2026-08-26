@@ -10,9 +10,12 @@
 # and, if you didn't use that exact name, set DATABASE_URL in .env to match.
 # Every run then: drops + recreates the schema from scratch (schema.sql +
 # knowledge_base.sql) and reseeds both tenants -- always a clean slate, since
-# these are cheap and fully deterministic. Chat messages + embeddings are the
-# one step that stays cached (skipped once chat_data/embeddings.json exists)
-# since that's a real, billed OpenAI API call.
+# these are cheap and fully deterministic. Entity-name/alias embeddings
+# (db/entity_embeddings.json) are content-addressed by text, not row id, so
+# they survive every reseed untouched and only pay for genuinely new names.
+# Chat messages + embeddings are the one step that stays cached (skipped
+# once chat_data/embeddings.json exists) since that's a bigger, real, billed
+# OpenAI API call.
 
 set -euo pipefail
 
@@ -65,6 +68,9 @@ psql "$DATABASE_URL" -f db/schema.sql -f db/knowledge_base.sql
 echo "Seeding tenant_a and tenant_b..."
 python db/seed_tenant_a.py
 python db/seed_tenant_b.py
+
+echo "Embedding entity names/aliases..."
+python db/embed_entities.py
 
 if [ "$RESEED" = true ] || [ ! -f chat_data/embeddings.json ]; then
   echo "Generating chat messages and embeddings..."

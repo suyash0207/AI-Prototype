@@ -16,9 +16,15 @@ from app.tools.base import ToolSchema
 
 
 class ClarificationCandidate(BaseModel):
-    label: str = Field(description="Human-readable description, e.g. 'Supplier B Ltd. (SUP-1043)'.")
-    canonical_type: str = Field(description="Which kind of ERP record this is, e.g. 'supplier'.")
-    reference_code: str = Field(description="The candidate's human-facing reference_code, e.g. 'SUP-1043'.")
+    label: str = Field(
+        description="Human-readable description, e.g. 'Supplier B Ltd. (SUP-1043)'."
+    )
+    canonical_type: str = Field(
+        description="Which kind of ERP record this is, e.g. 'supplier'."
+    )
+    reference_code: str = Field(
+        description="The candidate's human-facing reference_code, e.g. 'SUP-1043'."
+    )
 
 
 class AskClarificationTool(ToolSchema):
@@ -34,7 +40,9 @@ class AskClarificationTool(ToolSchema):
     question: str = Field(
         description='The question to show the user, e.g. "Did you mean Supplier B Ltd. (SUP-1043)?"'
     )
-    candidates: list[ClarificationCandidate] = Field(description="The options the user can pick from.")
+    candidates: list[ClarificationCandidate] = Field(
+        description="The options the user can pick from."
+    )
 
     def run(self, state: SessionState) -> str:
         lines = [self.question]

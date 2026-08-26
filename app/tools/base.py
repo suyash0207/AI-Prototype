@@ -11,7 +11,7 @@ string return.
 """
 
 from abc import ABC, abstractmethod
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 from pydantic import BaseModel
 
@@ -25,6 +25,14 @@ class ToolSchema(BaseModel, ABC):
     TOOL_DESCRIPTION: ClassVar[str]
     IS_RESPONSE_TOOL: ClassVar[bool] = False
 
+    # Query-planning gate (Level 2.2): a tool that pulls evidence sets
+    # REQUIRES_PLAN = True and declares which source it belongs to via
+    # SOURCE_KIND. `plan_query` must run first, and its declared
+    # needs_sql/needs_chat flags then gate which SOURCE_KIND is actually
+    # callable -- see PlanQueryTool and the default validate() below.
+    REQUIRES_PLAN: ClassVar[bool] = False
+    SOURCE_KIND: ClassVar[Literal["sql", "chat"] | None] = None
+
     def validate(self, state: SessionState) -> list[str]:
         """Structural checks before `run()`. Empty list means proceed.
 
@@ -34,6 +42,21 @@ class ToolSchema(BaseModel, ABC):
         only exists for checks that must block `run()` from being
         called at all.
         """
+        if self.REQUIRES_PLAN and state.query_plan is None:
+            return [
+                "You must call plan_query first, before using this tool, to state what evidence "
+                "you need and where from."
+            ]
+        if self.SOURCE_KIND == "sql" and state.query_plan is not None and not state.needs_sql:
+            return [
+                "Your plan said this question doesn't need SQL. Call plan_query again if that's "
+                "changed, or don't call this tool."
+            ]
+        if self.SOURCE_KIND == "chat" and state.query_plan is not None and not state.needs_chat:
+            return [
+                "Your plan said this question doesn't need chat retrieval. Call plan_query again "
+                "if that's changed, or don't call this tool."
+            ]
         return []
 
     @abstractmethod

@@ -20,6 +20,12 @@ class SessionState:
         self.chat_messages: list[dict[str, Any]] = []
         # One ledger per session -- see app/provenance/tracker.py for why this exists.
         self.provenance = ProvenanceLedger()
+        # Query-planning gate (Level 2.2) -- set by PlanQueryTool, reset per
+        # user message in orchestrator.handle_message. None means "no plan
+        # yet for this question" -- see ToolSchema.validate() in app/tools/base.py.
+        self.query_plan: str | None = None
+        self.needs_sql: bool | None = None
+        self.needs_chat: bool | None = None
 
     def add_human_message(self, text: str) -> None:
         self.chat_messages.append({"role": "user", "content": text})

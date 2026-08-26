@@ -17,6 +17,8 @@ class ListCustomersTool(ToolSchema):
         "'what's going on'/'give me an overview' questions where you don't yet have a "
         "specific customer name to search for."
     )
+    REQUIRES_PLAN = True
+    SOURCE_KIND = "sql"
 
     def run(self, state: SessionState) -> str:
         customers = _customer_repo.list_all(state.tenant_id)

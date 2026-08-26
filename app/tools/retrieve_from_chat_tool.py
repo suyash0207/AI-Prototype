@@ -23,6 +23,8 @@ class RetrieveFromChatTool(ToolSchema):
         "(not raw messages), each tagged with a provenance ref. Use this instead of trying to search "
         "chat yourself -- you have no direct chat search tool."
     )
+    REQUIRES_PLAN = True
+    SOURCE_KIND = "chat"
 
     query: str = Field(description="What to look for in the team chat history, in plain English.")
 

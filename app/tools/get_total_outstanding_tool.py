@@ -15,6 +15,8 @@ class GetTotalOutstandingTool(ToolSchema):
         "Total invoiced/paid/outstanding across ALL customers for this tenant. Use this for "
         "'how much overall are we owed' questions, not just one customer."
     )
+    REQUIRES_PLAN = True
+    SOURCE_KIND = "sql"
 
     def run(self, state: SessionState) -> str:
         invoiced = _invoice_repo.sum_amount_for_tenant(state.tenant_id)

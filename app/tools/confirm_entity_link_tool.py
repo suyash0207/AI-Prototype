@@ -4,6 +4,7 @@ ERP record. Called only after a user has explicitly answered an
 confidence, no matter how high `resolve_entity` scored it.
 """
 
+import logging
 from uuid import UUID
 
 from pydantic import Field
@@ -16,6 +17,9 @@ from app.repositories.purchase_order_repository import PurchaseOrderRepository
 from app.repositories.supplier_repository import SupplierRepository
 from app.state.session_state import SessionState
 from app.tools.base import ToolSchema
+from app.tools.resolve_entity_tool import add_entity_embedding
+
+logger = logging.getLogger(__name__)
 
 _knowledge_repo = KnowledgeBaseRepository()
 _supplier_repo = SupplierRepository()
@@ -60,6 +64,18 @@ class ConfirmEntityLinkTool(ToolSchema):
         entry = _knowledge_repo.insert_user_confirmed(
             state.tenant_id, self.mention, self.canonical_type, canonical_id
         )
+        try:
+            # Best-effort: the confirmation above already succeeded and is what
+            # matters. This just lets future, differently-worded mentions that
+            # resemble this alias surface as a candidate sooner than the next
+            # db/embed_entities.py run -- an embeddings hiccup here must never
+            # undo or block the confirmation itself.
+            add_entity_embedding(entry.alias_text)
+        except Exception:  # noqa: BLE001 - see comment above
+            logger.warning(
+                "add_entity_embedding failed for alias %r; will retry on next embed_entities.py run",
+                entry.alias_text,
+            )
         return (
             f"Recorded: '{entry.alias_text}' now resolves to {entry.canonical_type.value}:{self.reference_code} "
             "(source=user_confirmed). Future mentions of this phrase resolve directly, no more confirmation needed."
